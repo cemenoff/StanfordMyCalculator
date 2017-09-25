@@ -30,7 +30,7 @@ class ViewController: UIViewController {
         }
     }
 
-    //Move display from string to double
+    //Convert display type from string to double
     var displayValue: Double {
         get {
             return Double(display.text!)!
@@ -41,19 +41,20 @@ class ViewController: UIViewController {
         }
     }
     
+    //Call struct CalculatorBrain
+    private var brain: CalculatorBrain = CalculatorBrain()
     
     //Operational buttons (+ - * / π ...)
     @IBAction func perfomOperation(_ sender: UIButton) {
-        userIsInTheMiddleOfTyping = false
+        if userIsInTheMiddleOfTyping {
+            brain.setOperand(displayValue)
+            userIsInTheMiddleOfTyping = false
+        }
         if let mathSymbol = sender.currentTitle {
-            switch mathSymbol {
-            case "π":
-                displayValue = Double.pi
-            case "√":
-                displayValue = sqrt(displayValue)
-            default:
-                break
-            }
+            brain.performOperation(mathSymbol)
+        }
+        if let result = brain.result {
+            displayValue = result
         }
     }
     
