@@ -8,10 +8,6 @@
 
 import Foundation
 
-func changeSign(operand: Double) -> Double {
-    return -operand
-}
-
 struct CalculatorBrain {
     
     //Internal
@@ -22,6 +18,7 @@ struct CalculatorBrain {
         case unaryOperation((Double) -> Double)
         case binaryOperation((Double,Double) -> Double)
         case equals
+        case clearDisplay
     }
     
     //Dictionary with operations
@@ -35,7 +32,8 @@ struct CalculatorBrain {
         "÷" : Operation.binaryOperation({ $0 / $1 }),
         "+" : Operation.binaryOperation({ $0 + $1 }),
         "-" : Operation.binaryOperation({ $0 - $1 }),
-        "=" : Operation.equals
+        "=" : Operation.equals,
+        "C" : Operation.clearDisplay
     ]
     
     //Public
@@ -58,6 +56,9 @@ struct CalculatorBrain {
                 }
             case .equals:
                 performPendingBinaryOperation()
+            case .clearDisplay:
+                accumulator = 0
+                pendingBinaryOperation = nil
             }
         }
     }
@@ -79,6 +80,8 @@ struct CalculatorBrain {
             return function(firstOperand, secondOperand)
         }
     }
+    
+    //private var resultIsPending: Bool
     
     //Mutating bacuase it changes the value of struct because of "copy-write"
     mutating func setOperand(_ operand: Double) {
