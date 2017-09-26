@@ -58,5 +58,26 @@ class ViewController: UIViewController {
         }
     }
     
+    //Point button
+    @IBAction func floatingPoint() {
+        if !userIsInTheMiddleOfTyping {
+            display.text = "0" + numberFormatter.decimalSeparator
+        } else if !display.text!.contains(numberFormatter.decimalSeparator) {
+            display.text = display.text! + numberFormatter.decimalSeparator
+        }
+        userIsInTheMiddleOfTyping = true
+    }
+
+    private var numberFormatter = NumberFormatter()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        numberFormatter.alwaysShowsDecimalSeparator = false
+        numberFormatter.maximumFractionDigits = 6
+        numberFormatter.minimumFractionDigits = 0
+        numberFormatter.minimumIntegerDigits = 1
+        brain.numberFormatter = numberFormatter
+    }
+    
 }
 

@@ -21,6 +21,7 @@ struct CalculatorBrain {
         case clearDisplay
     }
     
+    
     //Dictionary with operations
     private var operations: Dictionary<String,Operation> = [
         "π" : Operation.constant(Double.pi),
@@ -37,6 +38,14 @@ struct CalculatorBrain {
     ]
     
     //Public
+    //Get result (read only). Optional because not set before perform operation
+    var result: Double? {
+        get {
+            return accumulator
+        }
+    }
+    
+    
     //Mutating bacuase it changes the value of struct because of "copy-write"
     mutating func performOperation(_ symbol: String) {
         
@@ -81,7 +90,7 @@ struct CalculatorBrain {
         }
     }
     
-    //private var resultIsPending: Bool
+    weak var numberFormatter: NumberFormatter?
     
     //Mutating bacuase it changes the value of struct because of "copy-write"
     mutating func setOperand(_ operand: Double) {
@@ -89,13 +98,6 @@ struct CalculatorBrain {
     
     }
     
-    //Get result (read only). Optional because not set before perform operation
-    var result: Double? {
-        get {
-            return accumulator
-        }
-        
-    }
     
 }
 
