@@ -13,6 +13,10 @@ class ViewController: UIViewController {
     //Display
     @IBOutlet weak var display: UILabel!
     
+    //History
+    @IBOutlet weak var history: UILabel!
+    
+    
     //Learn where user is begining of typing
     var userIsInTheMiddleOfTyping = false
     
@@ -31,13 +35,21 @@ class ViewController: UIViewController {
     }
 
     //Convert display type from string to double
-    var displayValue: Double {
+    var displayValue: Double? {
         get {
-            return Double(display.text!)!
+            if let text = display.text, let value = Double(text){
+                return value
+            }
+            return nil
         }
         
         set {
-            display.text = String(newValue)
+            if let value = newValue {
+                display.text = formatter.string(from: NSNumber(value:value))
+            }
+            if let description = brain.description {
+                history.text = description + (brain.resultIsPending ? " …" : " =")
+            }
         }
     }
     
@@ -47,15 +59,16 @@ class ViewController: UIViewController {
     //Operational buttons (+ - * / π ...)
     @IBAction func perfomOperation(_ sender: UIButton) {
         if userIsInTheMiddleOfTyping {
-            brain.setOperand(displayValue)
+            if let value = displayValue{
+                brain.setOperand(value)
+            }
             userIsInTheMiddleOfTyping = false
         }
         if let mathSymbol = sender.currentTitle {
             brain.performOperation(mathSymbol)
         }
-        if let result = brain.result {
-            displayValue = result
-        }
+        displayValue = brain.result
+        
     }
     
     //Point button
@@ -66,6 +79,14 @@ class ViewController: UIViewController {
             display.text = display.text! + numberFormatter.decimalSeparator
         }
         userIsInTheMiddleOfTyping = true
+    }
+    
+    //ClearAll Button
+    @IBAction func clearAll(_ sender: UIButton) {
+        brain.clear()
+        displayValue = 0
+        userIsInTheMiddleOfTyping = false
+        history.text = " "
     }
 
     private var numberFormatter = NumberFormatter()
